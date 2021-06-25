@@ -4,43 +4,79 @@ const forsaleRouter = express.Router();
 
 forsaleRouter
   .route("/buy/for-sale")
-  .get((req, res) => {
-    res.end("Send all for sale items");
+  .get((req, res, next) => {
+    ForSale.find()
+      .then((forsale) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(forsale);
+      })
+      .catch((err) => next(err));
   })
-  .post((req, res) => {
-    res.end(
-      `Will add for sale item: ${req.body.name} with description: ${req.body.description}`
-    );
+  .post((req, res, next) => {
+    ForSale.create(req.body)
+      .then((forsale) => {
+        console.log("For Sale Created ", forsale);
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(forsale);
+      })
+      .catch((err) => next(err));
   })
   .put((req, res) => {
     res.statusCode = 403;
-    res.end(`Will update for sale item: ${req.body.name}`);
+    res.end("PUT operation not supported on /buy/for-sale");
   })
-  .delete((req, res) => {
-    res.end("Delete all for sale items");
+  .delete((req, res, next) => {
+    ForSale.deleteMany()
+      .then((response) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(response);
+      })
+      .catch((err) => next(err));
   });
 
 forsaleRouter
   .route("/buy/for-sale/:forsaleId")
-  .all((req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader("Content-Type", "text/plain");
-    next();
-  })
-  .get((req, res) => {
-    res.end("Will send single for sale item");
+  .get((req, res, next) => {
+    ForSale.findById(req.params.auctionId)
+      .then((forsale) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(forsale);
+      })
+      .catch((err) => next(err));
   })
   .post((req, res) => {
+    res.statusCode = 403;
     res.end(
-      `Will add the for sale item: ${req.body.name} with description: ${req.body.description}`
+      `POST operation not supported on /buy/for-sale/${req.params.forsaleId}`
     );
   })
-  .put((req, res) => {
-    res.statusCode = 403;
-    res.end(`Will update single for sale item: ${req.body.name}`);
+  .put((req, res, next) => {
+    ForSale.findByIdAndUpdate(
+      req.params.forsaleId,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    )
+      .then((forsale) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(forsale);
+      })
+      .catch((err) => next(err));
   })
-  .delete((req, res) => {
-    res.end(`Will delete for sale item: ${req.params.forsaleName}`);
+  .delete((req, res, next) => {
+    ForSale.findByIdAndDelete(req.params.forsaleId)
+      .then((response) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(response);
+      })
+      .catch((err) => next(err));
   });
 
 module.exports = forsaleRouter;

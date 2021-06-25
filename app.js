@@ -10,6 +10,21 @@ const auctionRouter = require("./routes/auctionRouter");
 const forsaleRouter = require("./routes/forsaleRouter");
 const loginRouter = require("./routes/loginRouter");
 
+const mongoose = require("mongoose");
+
+const url = "mongodb://localhost:27017/bigauctions";
+const connect = mongoose.connect(url, {
+  useCreateIndex: true,
+  useFindAndModify: false,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+connect.then(
+  () => console.log("Connect correctly to server"),
+  (err) => console.log(err)
+);
+
 var app = express();
 
 // view engine setup
@@ -21,12 +36,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/buy/auctions", auctionRouter);
-app.use("/buy/for-sale", forsaleRouter);
-app.use("/login", loginRouter);
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/buy/auctions", auctionRouter);
+app.use("/buy/for-sale", forsaleRouter);
+app.use("/login", loginRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

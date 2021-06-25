@@ -3,7 +3,10 @@ const loginRouter = express.Router();
 
 loginRouter
   .route("/login")
-  .get((req, res) => {})
+  .get((req, res) => {
+    res.statusCode = 403;
+    res.end("GET operation not supported on /login");
+  })
   .post((req, res, next) => {
     loginRouter
       .create(req.body)
@@ -19,7 +22,10 @@ loginRouter
     res.statusCode = 403;
     res.end("PUT operation not supported on /login");
   })
-  .delete((req, res, next) => {});
+  .delete((req, res, next) => {
+    res.statusCode = 403;
+    res.end("DELETE operation not supported on /login");
+  });
 
 loginRouter
   .route("/login/:userId")
