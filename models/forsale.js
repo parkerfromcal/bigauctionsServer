@@ -26,6 +26,4 @@ const forsaleSchema = new Schema(
   }
 );
 
-const ForSale = mongoose.model("ForSale", forsaleSchema);
-
-module.exports = ForSale;
+module.exports = mongoose.model("ForSale", forsaleSchema);
