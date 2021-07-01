@@ -1,5 +1,6 @@
 const express = require("express");
 const Auction = require("../models/campsite");
+
 const auctionRouter = express.Router();
 
 auctionRouter
